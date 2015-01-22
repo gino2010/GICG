@@ -13,9 +13,8 @@ Develop Environment
 * [Python] version: 2.7
 * [Nmap] version: 6.47
 
-Note: You need install Nmap tools for running this project.
+Note: You need to install Nmap software for running this project.
 
-System
 License
 -------
 MIT
