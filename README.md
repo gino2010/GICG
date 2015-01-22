@@ -2,9 +2,8 @@ Google IP address Configuration Generator
 ======
 This project will help you to find available Google ip address, and Generate configuring content for [Dnsmasq].
 
-You have to know about one thing that there are lots available Google ips and you can enjoy Google service using them.
-
-So this is reason why write this project. 
+You have to know about one thing that there are lots of available Google ips and you can enjoy Google service using them.
+ This is reason why I write this project. 
 
 This is pilot project now. So only test in specific environment.
 
