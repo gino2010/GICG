@@ -61,13 +61,6 @@ def scan_ip_range(ranges):
             item.join()
             processes.remove(item)
 
-    # for item in ranges:
-    #     cmd = 'nmap -p443 ' + item
-    #     print(cmd)
-    #     pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    #     result = pipe.communicate()[0]
-    #     output.write(result)
-
     output.flush()
     output.close()
 
