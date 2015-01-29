@@ -117,5 +117,7 @@ def parse_args():
 
 if __name__ == '__main__':
     source_num = parse_args()
+    print('Start to analyse file and sort ip records by latency\n')
     sort_all_ip()
+    print('Check top %d records and generate dnsmasq address list\n' % source_num)
     reverse_address(source_num)
