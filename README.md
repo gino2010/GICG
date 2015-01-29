@@ -17,7 +17,7 @@ Notice: You need to install Nmap software for running this project.
 
 Usage
 -------
-First, you should run sgi.py to find potential available google ips, and get raw_output file for nex step.
+First, you should run sgi.py to find potential available google ips, and get raw_output file for next step.
 
     Python sgi.py
 Notice: 
