@@ -13,7 +13,15 @@ Develop Environment
 * [Python] version: 2.7
 * [Nmap] version: 6.47
 
-Note: You need to install Nmap software for running this project.
+Notice: You need to install Nmap software for running this project.
+
+Usage
+-------
+First, you should run sgi.py to find potential available google ips, and get raw_output file for nex step.
+
+Notice: run sgi.py, it will take a few minutes, maybe one or more hours, please waiting...
+
+Python sgi.py
 
 License
 -------
