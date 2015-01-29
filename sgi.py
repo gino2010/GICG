@@ -16,8 +16,6 @@ def get_google_ip_range():
     output = cmd.read()
     pattern = re.compile(r'ip4:(.*?) ')
     ip_range = pattern.findall(output)
-    # Beijing: 203.208.32.0 ~ 203.208.63.255
-    ip_range.append('203.208.32.0/19')
     return ip_range
 
 
