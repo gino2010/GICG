@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Scan Google IP
-# https://gist.github.com/mashihua/96d8cc11bfedb9098f85
 import multiprocessing
 
 import os
@@ -17,17 +16,17 @@ def get_google_ip_range():
     output = cmd.read()
     pattern = re.compile(r'ip4:(.*?) ')
     ip_range = pattern.findall(output)
-    # Beijing: 203.208.32.0 - 203.208.63.255
+    # Beijing: 203.208.32.0 ~ 203.208.63.255
     ip_range.append('203.208.32.0/19')
     return ip_range
 
 
 # nmap process scan port 433
 class ScanProcess(multiprocessing.Process):
-    def __init__(self, ip_add, file, lock):
+    def __init__(self, ip_add, outfile, lock):
         multiprocessing.Process.__init__(self)
         self.ip_add = ip_add
-        self.file = file
+        self.outfile = outfile
         self.lock = lock
 
     def run(self):
@@ -37,8 +36,8 @@ class ScanProcess(multiprocessing.Process):
         result = pipe.communicate()[0]
         self.lock.acquire()
         print(cmd + ' write into file!')
-        self.file.write(result)
-        self.file.flush()
+        self.outfile.write(result)
+        self.outfile.flush()
         self.lock.release()
 
 
