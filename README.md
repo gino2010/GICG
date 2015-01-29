@@ -19,8 +19,7 @@ Usage
 -------
 First, you should run sgi.py to find potential available google ips, and get raw_output file for nex step.
 
-Python sgi.py
-
+    Python sgi.py
 Notice: run sgi.py, it will take a few minutes, maybe one or more hours, please waiting...
 
 License
