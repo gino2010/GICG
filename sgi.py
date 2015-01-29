@@ -11,7 +11,6 @@ import subprocess
 __author__ = 'gino'
 
 
-
 # Get Google ip range
 def get_google_ip_range():
     cmd = os.popen('nslookup -q=TXT _netblocks.google.com 8.8.8.8')
@@ -43,7 +42,7 @@ class ScanProcess(multiprocessing.Process):
         self.lock.release()
 
 
-#scan ip range
+# scan ip range
 def scan_ip_range(ranges):
     output = open('raw_output', 'w')
     lock = multiprocessing.Lock()
