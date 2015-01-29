@@ -45,7 +45,7 @@ class ScanProcess(multiprocessing.Process):
 
 #scan ip range
 def scan_ip_range(ranges):
-    output = open('raw_output_test', 'w')
+    output = open('raw_output', 'w')
     lock = multiprocessing.Lock()
     processes = []
     for item in ranges:
