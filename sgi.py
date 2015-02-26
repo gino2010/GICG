@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Scan Google IP
+# Scan Google IPs
 import multiprocessing
 
 import os
