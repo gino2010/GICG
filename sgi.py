@@ -47,21 +47,26 @@ def scan_ip_range(ranges):
     for item in ranges:
         processes.append(ScanProcess(item, output, lock))
 
-    #each group 4 items to run
-    while processes:
-        i = 0
-        temp = []
-        for item in processes:
-            if i == 4:
-                break
-            item.start()
-            temp.append(item)
-            i += 1
-        for item in temp:
-            item.join()
-            processes.remove(item)
+    runtemp = []
+    for i in xrange(4):
+        item = processes.pop()
+        item.start()
+        runtemp.append(item)
 
-    output.flush()
+    runflag = True
+    while runflag:
+        for item in runtemp:
+            item.join(1)
+            if not item.is_alive() and processes:
+                item = processes.pop()
+                item.start()
+            elif not processes:
+                runflag = False
+                break
+
+    for item in runtemp:
+        item.join()
+
     output.close()
 
 

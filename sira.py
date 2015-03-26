@@ -10,8 +10,6 @@ import requests
 
 __author__ = 'gino'
 
-list_add = []
-
 
 def sort_all_ip():
     regex = re.compile("(.*)443/tcp open  https(.*)")
@@ -37,30 +35,27 @@ def sort_all_ip():
                 except:
                     print('line %s wrong' % num)
 
-    sorted_ips = sorted(match_ips.items(), key=operator.itemgetter(1))
-    sif = open('sorted_list', 'w')
-
-    for item in sorted_ips[:source_num]:
-        sif.write(item[0] + ":" + str(item[1]) + "\n")
-    sif.flush()
-    sif.close()
+    return sorted(match_ips.items(), key=operator.itemgetter(1))
 
 
-def reverse_address(rest_num):
-    fa = open('address_list', 'r')
+def reverse_address(rest_num, sorted_ips):
     fot = open('timeout', 'w')
+    fca = open('collect_list', 'w')
     output = []
+    list_add = []
 
-    for line in fa:
-        list_add.append(line.rstrip())
+    with open('address_list', 'r') as fa:
+        for line in fa:
+            list_add.append(line.rstrip())
+    # set_add = set()
+    list_temp = list_add[:]
 
-    set_add = set()
-
-    sif = open('sorted_list', 'r')
-    for line in sif:
+    for item in sorted_ips:
         try:
-            add_ip = line.split(':')[0]
-            requests.get('https://{}'.format(add_ip), timeout=1)
+            add_ip = item[0]
+            # if add_ip == '173.194.38.216':
+            #     pass
+            requests.get('https://{}'.format(add_ip), timeout=1.5)
         except requests.exceptions.SSLError as e:
             message = str(e.message)
             pos = message.find('of')
@@ -70,35 +65,29 @@ def reverse_address(rest_num):
             else:
                 rev_add_temp.append(message[message.find('match') + 7:-1])
             # just collect site address
-            set_add = set_add.union(set(rev_add_temp))
+            # set_add = set_add.union(set(rev_add_temp))
+            fca.write('ip:{} address:{} \n'.format(add_ip, str(rev_add_temp)))
+            list_add = list_temp[:]
             for str_temp in list_add:
-                for item in rev_add_temp:
-                    # if 'cache' in item: break
-                    if str_temp in item and len(item.split('.')) <= 3:
-                        output.append('address=/{}/{}\n'.format(str_temp, add_ip))
-                        list_add.remove(str_temp)
-                        break
+                if str_temp in rev_add_temp:
+                    output.append('address=/{}/{}\n'.format(str_temp[2:] if str_temp.startswith('*.') else str_temp, add_ip))
+                    list_temp.remove(str_temp)
+
             print('{} is checked'.format(add_ip))
+            rest_num -= 1
         except requests.exceptions.ConnectTimeout:
             fot.write(add_ip + ' is timeout \n')
             print('{} is timeout'.format(add_ip))
-        except:
+        except Exception as e:
             fot.write(add_ip + ' is error \n')
-            print('{} is error'.format(add_ip))
+            print('{} is error, message:{}'.format(add_ip, e.message))
 
-        rest_num -= 1
         print('left {}'.format(str(rest_num)))
 
-        if len(list_add) == 0:
+        if len(list_temp) == 0 or rest_num <= 0:
             break
 
     fot.close()
-
-    fca = open('collect_list', 'w')
-    for item in set_add:
-        fca.write(item + '\n')
-    fca.flush()
-    fca.close()
 
     ffd = open('dnsmasq', 'w')
     output.sort()
@@ -118,6 +107,6 @@ def parse_args():
 if __name__ == '__main__':
     source_num = parse_args()
     print('Start to analyse file and sort ip records by latency\n')
-    sort_all_ip()
+    sorted_ips = sort_all_ip()
     print('Check top %d records and generate dnsmasq address list\n' % source_num)
-    reverse_address(source_num)
+    reverse_address(source_num, sorted_ips)
