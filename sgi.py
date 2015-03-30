@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Scan Google IPs
+import argparse
 import multiprocessing
 
 import os
@@ -40,7 +41,7 @@ class ScanProcess(multiprocessing.Process):
 
 
 # scan ip range
-def scan_ip_range(ranges):
+def scan_ip_range(ranges, mnum):
     output = open('raw_output', 'w')
     lock = multiprocessing.Lock()
     processes = []
@@ -50,7 +51,7 @@ def scan_ip_range(ranges):
     import datetime
     print('start: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     runtemp = []
-    for i in xrange(4):
+    for i in xrange(mnum):
         item = processes.pop()
         item.start()
         runtemp.append(item)
@@ -75,6 +76,13 @@ def scan_ip_range(ranges):
     output.close()
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Number of multiprocess')
+    parser.add_argument('integers', metavar='Num', type=int, nargs='?',
+                        help='an integer for the number of multiprocess', default=4)
+    return parser.parse_args().integers
+
 if __name__ == '__main__':
+    mnum = parse_args()
     ip_range = get_google_ip_range()
-    scan_ip_range(ip_range)
+    scan_ip_range(ip_range, mnum)
