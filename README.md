@@ -19,11 +19,12 @@ Usage
 -------
 First, you should run sgi.py to find potential available google ips, and get raw_output file for next step.
 
-    Python sgi.py
+    Python sgi.py [multi_num]
 Notice: 
 
 * run sgi.py, it will take a few minutes, maybe one or more hours, please waiting...
 * You should get raw_output file, this file is for next step
+* multi_num is number of multiprocess running in same time, default is 4
 
 
 Second, run sira.py to generate dnsmasq address list
@@ -34,7 +35,7 @@ Notice:
 * You can modify address_list to set google domains which you want to search 
 * max_num is number of records you want to check, default is 100.
 
-Finally, you should get dnsmasq, collect_list, sorted_list, timeout, four output files.
+Finally, you could get dnsmasq, collect_list, timeout and raw_output four output files.
 
 * dnsmasq: address list
 * collect_list: google domain, find from ip analysis, maybe you can find some you want to add to address_list
