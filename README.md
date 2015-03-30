@@ -39,8 +39,8 @@ Finally, you could get dnsmasq, collect_list, timeout and raw_output four output
 
 * dnsmasq: address list
 * collect_list: google domain, find from ip analysis, maybe you can find some you want to add to address_list
-* sorted_list: process output, record these ips which you have searched
 * timeout: record ips which timeout
+* raw_output: nmap record
 
 License
 -------
