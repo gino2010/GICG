@@ -47,6 +47,8 @@ def scan_ip_range(ranges):
     for item in ranges:
         processes.append(ScanProcess(item, output, lock))
 
+    import datetime
+    print('start: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     runtemp = []
     for i in xrange(4):
         item = processes.pop()
@@ -69,7 +71,7 @@ def scan_ip_range(ranges):
 
     for item in runtemp:
         item.join()
-
+    print('end: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     output.close()
 
 
