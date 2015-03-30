@@ -58,11 +58,13 @@ def scan_ip_range(ranges):
         for item in runtemp:
             item.join(1)
             if not item.is_alive() and processes:
+                runtemp.remove(item)
                 item = processes.pop()
                 item.start()
+                runtemp.append(item)
             elif not processes:
                 runflag = False
-                break
+            break
 
     for item in runtemp:
         item.join()
