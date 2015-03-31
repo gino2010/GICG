@@ -1,7 +1,6 @@
 *.google.com
 *.doubleclick.net
 *.youtubeeducation.com
-*.googleapis.com
 *.commondatastorage.googleapis.com
 *.storage.googleapis.com
 *.googlesyndication.com
@@ -20,9 +19,10 @@
 *.googlecommerce.com
 *.gvt1.com
 *.gvt2.com
-*.googlecode.com
 *.google.com.cn
 *.google.cn
 *.google.com.hk
+*.ext.google.com
+*.cloud.google.com
 goo.gl
 g.co
