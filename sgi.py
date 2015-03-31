@@ -47,31 +47,30 @@ def scan_ip_range(ranges, mnum):
     processes = []
     for item in ranges:
         processes.append(ScanProcess(item, output, lock))
+    print('%d items will be checked.' % len(processes))
 
     import datetime
     print('start: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    #initial runtemp gourp
     runtemp = []
     for i in xrange(mnum):
         item = processes.pop()
         item.start()
         runtemp.append(item)
 
-    runflag = True
-    while runflag:
-        for item in runtemp:
-            item.join(1)
-            if not item.is_alive() and processes:
-                runtemp.remove(item)
-                item = processes.pop()
-                item.start()
-                runtemp.append(item)
+    while True:
+        for i in xrange(len(runtemp)):
+            runtemp[i].join(1)
+            if not runtemp[i].is_alive() and processes:
+                runtemp[i] = processes.pop()
+                runtemp[i].start()
+            elif not runtemp[i].is_alive() and not processes:
+                runtemp.pop(i)
                 break
-            elif not processes:
-                runflag = False
-                break
+        if not runtemp:
+            break
 
-    for item in runtemp:
-        item.join()
     print('end: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     output.close()
 

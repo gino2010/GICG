@@ -38,6 +38,7 @@ def sort_all_ip():
     return sorted(match_ips.items(), key=operator.itemgetter(1))
 
 
+#get address map ip
 def reverse_address(rest_num, sorted_ips):
     fot = open('timeout', 'w')
     fca = open('collect_list', 'w')
@@ -47,14 +48,11 @@ def reverse_address(rest_num, sorted_ips):
     with open('address_list', 'r') as fa:
         for line in fa:
             list_add.append(line.rstrip())
-    # set_add = set()
     list_temp = list_add[:]
 
     for item in sorted_ips:
         try:
             add_ip = item[0]
-            # if add_ip == '173.194.38.216':
-            #     pass
             requests.get('https://{}'.format(add_ip), timeout=1.5)
         except requests.exceptions.SSLError as e:
             message = str(e.message)
@@ -65,7 +63,6 @@ def reverse_address(rest_num, sorted_ips):
             else:
                 rev_add_temp.append(message[message.find('match') + 7:-1])
             # just collect site address
-            # set_add = set_add.union(set(rev_add_temp))
             fca.write('ip:{} address:{} \n'.format(add_ip, str(rev_add_temp)))
             list_add = list_temp[:]
             for str_temp in list_add:
@@ -74,7 +71,6 @@ def reverse_address(rest_num, sorted_ips):
                     list_temp.remove(str_temp)
 
             print('{} is checked'.format(add_ip))
-            rest_num -= 1
         except requests.exceptions.ConnectTimeout:
             fot.write(add_ip + ' is timeout \n')
             print('{} is timeout'.format(add_ip))
@@ -82,9 +78,10 @@ def reverse_address(rest_num, sorted_ips):
             fot.write(add_ip + ' is error \n')
             print('{} is error, message:{}'.format(add_ip, e.message))
 
+        rest_num -= 1
         print('left {}'.format(str(rest_num)))
 
-        if len(list_temp) == 0 or rest_num <= 0:
+        if not list_temp or not rest_num:
             break
 
     fot.close()

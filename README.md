@@ -34,6 +34,7 @@ Notice:
 
 * You can modify address_list to set google domains which you want to search 
 * max_num is number of records you want to check, default is 100.
+* if max_num is zero, that means program will try to get all item of address_list
 
 Finally, you could get dnsmasq, collect_list, timeout and raw_output four output files.
 
