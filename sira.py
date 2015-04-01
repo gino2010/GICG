@@ -52,6 +52,7 @@ def reverse_address(rest_num, sorted_ips):
     list_temp = list_add[:]
 
     set_add = set()
+    outcount = 0
 
     for item in sorted_ips:
         try:
@@ -88,6 +89,9 @@ def reverse_address(rest_num, sorted_ips):
             print('left {} item(s) will be check.'.format(str(rest_num)))
         else:
             print('left {} address(s) need to check.'.format(len(list_temp)))
+            if len(list_temp) != outcount:
+                print(list_temp)
+                outcount = len(list_temp)
 
         if not list_temp or not rest_num:
             break
