@@ -78,10 +78,10 @@ def reverse_address(rest_num, sorted_ips):
 
             print('{} is checked'.format(add_ip))
         except requests.exceptions.ConnectTimeout:
-            fot.write(add_ip + ' is timeout \n')
+            fot.write(add_ip + ' is TIMEOUT \n')
             print('{} is timeout'.format(add_ip))
         except Exception as e:
-            fot.write(add_ip + ' is error \n')
+            fot.write(add_ip + ' is ERROR \n')
             print('{} is error, message:{}'.format(add_ip, e.message))
 
         rest_num -= 1
