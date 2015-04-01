@@ -16,8 +16,7 @@ def get_google_ip_range():
     cmd = os.popen('nslookup -q=TXT _netblocks.google.com 8.8.8.8')
     output = cmd.read()
     pattern = re.compile(r'ip4:(.*?) ')
-    ip_range = pattern.findall(output)
-    return ip_range
+    return pattern.findall(output)
 
 
 # nmap process scan port 433
@@ -52,7 +51,7 @@ def scan_ip_range(ranges, mnum):
     import datetime
     print('start: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    #initial runtemp gourp
+    # initial runtemp gourp
     runtemp = []
     for i in xrange(mnum):
         item = processes.pop()
@@ -82,6 +81,6 @@ def parse_args():
     return parser.parse_args().integers
 
 if __name__ == '__main__':
-    mnum = parse_args()
+    arg_num = parse_args()
     ip_range = get_google_ip_range()
-    scan_ip_range(ip_range, mnum)
+    scan_ip_range(ip_range, arg_num)
