@@ -10,6 +10,15 @@ import requests
 
 __author__ = 'gino'
 
+IGNORE_IP = ['216.', '64.233.189.']
+
+
+def ignore(ip):
+    for item in IGNORE_IP:
+        if ip.startswith(item):
+            return True
+    return False
+
 
 def sort_all_ip():
     regex = re.compile("(.*)443/tcp open  https(.*)")
@@ -32,7 +41,12 @@ def sort_all_ip():
             latency = re.findall(r'0.\d+', lines[num - 2])
             if latency:
                 try:
-                    match_ips[re.findall(r'[0-9]+(?:\.[0-9]+){3}', lines[num - 3])[0]] = float(latency[0])
+                    ip_addresses = re.findall(r'[0-9]+(?:\.[0-9]+){3}', lines[num - 3])
+                    ip_address = ip_addresses[1] if len(ip_addresses) == 2 else ip_addresses[0]
+                    if ignore(ip_address):
+                        print('pass %s address' % ip_address)
+                        continue
+                    match_ips[ip_address] = float(latency[0])
                 except:
                     print('line %s error!' % num)
 
@@ -88,7 +102,7 @@ def reverse_address(rest_num, sorted_ips):
         if rest_num > 0:
             print('left {} item(s) will be check.'.format(str(rest_num)))
         else:
-            print('left {} address(s) need to check.'.format(len(list_temp)))
+            print('left {} address(es) need to check and already check {} address(es).'.format(len(list_temp), 0-rest_num))
             if len(list_temp) != outcount:
                 print(list_temp)
                 outcount = len(list_temp)

@@ -10,13 +10,20 @@ import subprocess
 
 __author__ = 'gino'
 
+IGNORE_IP = ['216.239.32.0/19', '216.58.192.0/19']
+
 
 # Get Google ip range
 def get_google_ip_range():
     cmd = os.popen('nslookup -q=TXT _netblocks.google.com 8.8.8.8')
     output = cmd.read()
     pattern = re.compile(r'ip4:(.*?) ')
-    return pattern.findall(output)
+    ip_temp = pattern.findall(output)
+    ip_list = []
+    for item in ip_temp:
+        if item not in IGNORE_IP:
+            ip_list.append(item)
+    return ip_list
 
 
 # nmap process scan port 433
