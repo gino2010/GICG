@@ -68,47 +68,51 @@ def reverse_address(rest_num, sorted_ips):
     set_add = set()
     outcount = 0
 
-    for item in sorted_ips:
-        try:
-            add_ip = item[0]
-            requests.get('https://{}'.format(add_ip), timeout=1.5)
-        except requests.exceptions.SSLError as e:
-            message = str(e.message)
-            pos = message.find('of')
-            rev_add_temp = []
-            if pos != -1:
-                rev_add_temp = message[message.find('of') + 4:-1].split("', '")
+    try:
+        for item in sorted_ips:
+            try:
+                add_ip = item[0]
+                requests.get('https://{}'.format(add_ip), timeout=1.5)
+            except requests.exceptions.SSLError as e:
+                message = str(e.message)
+                pos = message.find('of')
+                rev_add_temp = []
+                if pos != -1:
+                    rev_add_temp = message[message.find('of') + 4:-1].split("', '")
+                else:
+                    rev_add_temp.append(message[message.find('match') + 7:-1])
+                # just collect site address
+                set_add = set_add.union(set(rev_add_temp))
+                fca.write('ip:{} address:{} \n'.format(add_ip, str(rev_add_temp)))
+                list_add = list_temp[:]
+                for str_temp in list_add:
+                    if str_temp in rev_add_temp:
+                        output.append(
+                            'address=/{}/{}\n'.format(str_temp[2:] if str_temp.startswith('*.') else str_temp, add_ip))
+                        list_temp.remove(str_temp)
+
+                print('{} is checked'.format(add_ip))
+            except requests.exceptions.ConnectTimeout:
+                fot.write(add_ip + ' is TIMEOUT \n')
+                print('{} is timeout'.format(add_ip))
+            except Exception as e:
+                fot.write(add_ip + ' is ERROR \n')
+                print('{} is error, message:{}'.format(add_ip, e.message))
+
+            rest_num -= 1
+            if rest_num > 0:
+                print('left {} item(s) will be check.'.format(str(rest_num)))
             else:
-                rev_add_temp.append(message[message.find('match') + 7:-1])
-            # just collect site address
-            set_add = set_add.union(set(rev_add_temp))
-            fca.write('ip:{} address:{} \n'.format(add_ip, str(rev_add_temp)))
-            list_add = list_temp[:]
-            for str_temp in list_add:
-                if str_temp in rev_add_temp:
-                    output.append(
-                        'address=/{}/{}\n'.format(str_temp[2:] if str_temp.startswith('*.') else str_temp, add_ip))
-                    list_temp.remove(str_temp)
+                print('left {} address(es) need to check and already check {} address(es).'.format(len(list_temp),
+                                                                                                   0 - rest_num))
+                if len(list_temp) != outcount:
+                    print(list_temp)
+                    outcount = len(list_temp)
 
-            print('{} is checked'.format(add_ip))
-        except requests.exceptions.ConnectTimeout:
-            fot.write(add_ip + ' is TIMEOUT \n')
-            print('{} is timeout'.format(add_ip))
-        except Exception as e:
-            fot.write(add_ip + ' is ERROR \n')
-            print('{} is error, message:{}'.format(add_ip, e.message))
-
-        rest_num -= 1
-        if rest_num > 0:
-            print('left {} item(s) will be check.'.format(str(rest_num)))
-        else:
-            print('left {} address(es) need to check and already check {} address(es).'.format(len(list_temp), 0-rest_num))
-            if len(list_temp) != outcount:
-                print(list_temp)
-                outcount = len(list_temp)
-
-        if not list_temp or not rest_num:
-            break
+            if not list_temp or not rest_num:
+                break
+    except KeyboardInterrupt:
+        print('abort scan...')
 
     if list_temp:
         print('Notice: %s not found ip' % str(list_temp))
@@ -116,7 +120,7 @@ def reverse_address(rest_num, sorted_ips):
         print('Total {} items have been checked'.format(0 - rest_num if rest_num < 0 else rest_num))
     fot.close()
 
-    #output distinct address
+    # output distinct address
     collect_list = list(set_add)
     collect_list.sort()
     for item in collect_list:
