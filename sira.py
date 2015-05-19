@@ -10,14 +10,21 @@ import requests
 
 __author__ = 'gino'
 
-IGNORE_IP = ['216.', '64.233.189.']
+IGNORE_IP = ['216.', '64.233.', '74.125']
+ONLY_IP = []
 
 
-def ignore(ip):
-    for item in IGNORE_IP:
-        if ip.startswith(item):
-            return True
-    return False
+def filter_ip(ip):
+    if ONLY_IP:
+        for item in ONLY_IP:
+            if ip.startswith(item):
+                return False
+        return True
+    else:
+        for item in IGNORE_IP:
+            if ip.startswith(item):
+                return True
+        return False
 
 
 def sort_all_ip():
@@ -43,7 +50,7 @@ def sort_all_ip():
                 try:
                     ip_addresses = re.findall(r'[0-9]+(?:\.[0-9]+){3}', lines[num - 3])
                     ip_address = ip_addresses[1] if len(ip_addresses) == 2 else ip_addresses[0]
-                    if ignore(ip_address):
+                    if filter_ip(ip_address):
                         print('pass %s address' % ip_address)
                         continue
                     match_ips[ip_address] = float(latency[0])

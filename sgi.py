@@ -11,6 +11,7 @@ import subprocess
 __author__ = 'gino'
 
 IGNORE_IP = ['216.239.32.0/19', '216.58.192.0/19']
+EXTRA_IP = ['87.245.192.0/18', ]
 
 
 # Get Google ip range
@@ -18,11 +19,10 @@ def get_google_ip_range():
     cmd = os.popen('nslookup -q=TXT _netblocks.google.com 8.8.8.8')
     output = cmd.read()
     pattern = re.compile(r'ip4:(.*?) ')
-    ip_temp = pattern.findall(output)
-    ip_list = []
-    for item in ip_temp:
-        if item not in IGNORE_IP:
-            ip_list.append(item)
+    ip_list = pattern.findall(output)
+    for item in IGNORE_IP:
+        ip_list.remove(item)
+    ip_list.extend(EXTRA_IP)
     return ip_list
 
 
