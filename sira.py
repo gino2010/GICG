@@ -7,10 +7,9 @@ import operator
 
 import requests
 
-
 __author__ = 'gino'
 
-IGNORE_IP = ['216.', '64.233.', '74.125']
+IGNORE_IP = ['216.', ]
 ONLY_IP = []
 
 
@@ -28,7 +27,7 @@ def filter_ip(ip):
 
 
 def sort_all_ip():
-    regex = re.compile("(.*)443/tcp open  https(.*)")
+    regex = re.compile("443/tcp open  https|443/tcp filtered https")
     match_lines = []
     match_ips = {}
     with open('raw_output', 'r') as fo:
@@ -36,26 +35,37 @@ def sort_all_ip():
         count = 0
         for line in fo:
             result = regex.search(line)
-            if result is not None:
-                match_lines.append(count)
+            if result is not None and result.string == '443/tcp open  https\n':
+                match_lines.append((count, 0))
+            elif result is not None and result.string == '443/tcp filtered https\n':
+                match_lines.append((count, 1))
             count += 1
 
         # get ips
         fo.seek(0)
         lines = fo.readlines()
-        for num in match_lines:
-            # latency less than 1S
-            latency = re.findall(r'0.\d+', lines[num - 2])
-            if latency:
-                try:
-                    ip_addresses = re.findall(r'[0-9]+(?:\.[0-9]+){3}', lines[num - 3])
-                    ip_address = ip_addresses[1] if len(ip_addresses) == 2 else ip_addresses[0]
-                    if filter_ip(ip_address):
-                        print('pass %s address' % ip_address)
-                        continue
-                    match_ips[ip_address] = float(latency[0])
-                except:
-                    print('line %s error!' % num)
+        for item in match_lines:
+            latency = 1.0
+            if item[1] == 0:
+                # latency less than 1S
+                temp = re.findall(r'0.\d+', lines[item[0] - 2])
+                if temp:
+                    latency = temp[0]
+                else:
+                    continue
+            elif item[1] == 1:
+                temp = re.findall(r'Host is up\.', lines[item[0] - 2])
+                if not temp:
+                    continue
+            try:
+                ip_addresses = re.findall(r'[0-9]+(?:\.[0-9]+){3}', lines[item[0] - 3])
+                ip_address = ip_addresses[1] if len(ip_addresses) == 2 else ip_addresses[0]
+                if filter_ip(ip_address):
+                    print('pass %s address' % ip_address)
+                    continue
+                match_ips[ip_address] = float(latency)
+            except:
+                print('line %s error!' % item[0])
 
     return sorted(match_ips.items(), key=operator.itemgetter(1))
 

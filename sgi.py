@@ -10,7 +10,7 @@ import subprocess
 
 __author__ = 'gino'
 
-IGNORE_IP = ['216.239.32.0/19', '216.58.192.0/19']
+IGNORE_IP = ['216.239.32.0/19', '216.58.192.0/19', '66.249.80.0/20']
 EXTRA_IP = ['87.245.192.0/18', ]
 
 
@@ -35,7 +35,7 @@ class ScanProcess(multiprocessing.Process):
         self.lock = lock
 
     def run(self):
-        cmd = 'nmap -T5 -p443 --host-timeout 1000 ' + self.ip_add
+        cmd = 'nmap -Pn -T5 -p443 --host-timeout 1000 ' + self.ip_add
         print(cmd)
         pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result = pipe.communicate()[0]
