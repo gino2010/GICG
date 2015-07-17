@@ -11,7 +11,7 @@ import subprocess
 __author__ = 'gino'
 
 IGNORE_IP = ['216.239.32.0/19', '216.58.192.0/19', '66.249.80.0/20']
-EXTRA_IP = ['87.245.192.0/18', ]
+EXTRA_IP = []  # '87.245.192.0/18',
 
 
 # Get Google ip range
@@ -56,6 +56,7 @@ def scan_ip_range(ranges, mnum):
     print('%d items will be checked.' % len(processes))
 
     import datetime
+
     print('start: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # initial runtemp gourp
@@ -86,6 +87,7 @@ def parse_args():
     parser.add_argument('integers', metavar='Num', type=int, nargs='?',
                         help='an integer for the number of multiprocess', default=4)
     return parser.parse_args().integers
+
 
 if __name__ == '__main__':
     arg_num = parse_args()

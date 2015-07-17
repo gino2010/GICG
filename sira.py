@@ -4,12 +4,14 @@
 import argparse
 import re
 import operator
-
 import requests
+from requests.packages import urllib3
+
+urllib3.disable_warnings()
 
 __author__ = 'gino'
 
-IGNORE_IP = ['216.', ]
+IGNORE_IP = ['216.', '64.233.']
 ONLY_IP = []
 
 
@@ -106,6 +108,9 @@ def reverse_address(rest_num, sorted_ips):
                     if str_temp in rev_add_temp:
                         output.append(
                             'address=/{}/{}\n'.format(str_temp[2:] if str_temp.startswith('*.') else str_temp, add_ip))
+                        # add a rule for ingress
+                        if str_temp == '*.google.com':
+                            output.append('address=/{}/{}\n'.format('m-dot-betaspike.appspot.com', add_ip))
                         list_temp.remove(str_temp)
 
                 print('{} is checked'.format(add_ip))
