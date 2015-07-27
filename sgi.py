@@ -10,7 +10,12 @@ import subprocess
 
 __author__ = 'gino'
 
-IGNORE_IP = ['216.239.32.0/19', '216.58.192.0/19', '66.249.80.0/20']
+
+IGNORE_IP = ['64.18.0.0/20', '72.14.192.0/18', '74.125.0.0/16',
+             '173.194.0.0/16', '66.102.0.0/20',
+             '66.249.80.0/20', '216.58.192.0/19', '216.239.32.0/19',
+             '207.126.144.0/20', '209.85.128.0/17']#'64.233.160.0/19'
+
 EXTRA_IP = []  # '87.245.192.0/18',
 
 
@@ -24,6 +29,25 @@ def get_google_ip_range():
         ip_list.remove(item)
     ip_list.extend(EXTRA_IP)
     return ip_list
+
+
+# Split large ip range into small for multiprocessing
+def split_large_ip_range(ip_list):
+    final_list = []
+    for item in ip_list:
+        if int(item.split('/')[1]) == 16:
+            print('split ip range %s to: ' % item)
+            new_item = item.replace('/16', '/18')
+            final_list.append(new_item)
+            print('\t %s' % new_item)
+            for x in xrange(4):
+                if x == 0:
+                    continue
+                final_list.append(new_item.replace('.0.', '.%s.' % str(64*x)))
+                print('\t %s' % new_item.replace('.0.', '.%s.' % str(64*x)))
+        else:
+            final_list.append(item)
+    return final_list
 
 
 # nmap process scan port 433
@@ -61,7 +85,7 @@ def scan_ip_range(ranges, mnum):
 
     # initial runtemp gourp
     runtemp = []
-    for i in xrange(mnum):
+    for i in xrange(mnum) if len(ranges) > mnum else xrange(len(ranges)):
         item = processes.pop()
         item.start()
         runtemp.append(item)
@@ -92,4 +116,5 @@ def parse_args():
 if __name__ == '__main__':
     arg_num = parse_args()
     ip_range = get_google_ip_range()
-    scan_ip_range(ip_range, arg_num)
+    final_ip_range = split_large_ip_range(ip_range)
+    scan_ip_range(final_ip_range, arg_num)

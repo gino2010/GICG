@@ -11,7 +11,7 @@ urllib3.disable_warnings()
 
 __author__ = 'gino'
 
-IGNORE_IP = ['216.', '64.233.']
+IGNORE_IP = ['216.', ]
 ONLY_IP = []
 
 
@@ -138,6 +138,8 @@ def reverse_address(rest_num, sorted_ips):
 
     if list_temp:
         print('Notice: %s not found ip' % str(list_temp))
+        for temp in list_temp:
+            output.append('address=/{}/{}\n'.format(temp[2:] if str_temp.startswith('*.') else str_temp, '0.0.0.0'))
     else:
         print('Total {} items have been checked'.format(0 - rest_num if rest_num < 0 else rest_num))
     fot.close()
