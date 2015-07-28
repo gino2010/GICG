@@ -139,7 +139,7 @@ def reverse_address(rest_num, sorted_ips):
     if list_temp:
         print('Notice: %s not found ip' % str(list_temp))
         for temp in list_temp:
-            output.append('address=/{}/{}\n'.format(temp[2:] if str_temp.startswith('*.') else str_temp, '0.0.0.0'))
+            output.append('address=/{}/{}\n'.format(temp[2:] if temp.startswith('*.') else temp, '0.0.0.0'))
     else:
         print('Total {} items have been checked'.format(0 - rest_num if rest_num < 0 else rest_num))
     fot.close()
